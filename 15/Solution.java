@@ -1,53 +1,56 @@
-﻿import java.io.*;
-import java.math.*;
-import java.text.*;
-import java.util.*;
-import java.util.regex.*;
+import java.io.IOException;
+import java.util.Scanner;
 
 public class Solution {
 
-       /* ”читель рисовани¤ просит класс открыть книги по номеру страницы. 
-	* »ван можете начать перелистывать страницы книги сначала или с конца. 
-	* ¬сегда переворачивает страницы по одной.  огда открывает книгу, то 1 страница всегда находитс¤ справа.
-	* ѕоследн¤¤ страница может быть напечатана на одной странице, 
-	* зависет от количества страниц в книге. 
-	* —колько раз минимум нужно »вану перевернуть сраницы, чтобы найти нужную.
-	* Ћистать можно как сначала, так и с конца.
-	*
-	* n - количество страниц в книге
-	* p - номер нужной страницы
-	* 1 <= n <= 10e5
-	* 1 <= p <= n
-	*
-	* ѕример: 6 2;	4 5; 
-	* ќтвет:  1;	0.
-      	*/
+    /* Учитель рисования просит класс открыть книги по номеру страницы.
+     * Иван можете начать перелистывать страницы книги сначала или с конца.
+     * Всегда переворачивает страницы по одной.  Когда открывает книгу, то 1 страница всегда находится справа.
+     * Последняя страница может быть напечатана на одной странице,
+     * зависит от количества страниц в книге.
+     * Сколько раз минимум нужно Ивану перевернуть страницы, чтобы найти нужную.
+     * Листать можно как сначала, так и с конца.
+     *
+     * n - количество страниц в книге
+     * p - номер нужной страницы
+     * 1 <= n <= 10e5
+     * 1 <= p <= n
+     *
+     * пример: 6 2;	4 5;
+     * ответ:  1;	0.
+     */
 
     static int pageCount(int n, int p) {
-        /*
-         * Write your code here.
-         */
-
+        if (n%2 ==0)
+            n++;
+        int k = 0;
+        if (n != 0 && p != 0) {
+            if ((n / p) > 1) {
+                k = p / 2;
+            } else {
+                k = Math.abs((n - p) / 2);
+            }
+        }
+        return (k);
     }
 
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) throws IOException {
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
-
+        //BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+        System.out.println("Введите количество страниц в книге");
         int n = scanner.nextInt();
-        scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])*");
-
+//        scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])*");
+        System.out.println("\nНужная страница?");
         int p = scanner.nextInt();
-        scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])*");
-
+//        scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])*");
         int result = pageCount(n, p);
 
-        bufferedWriter.write(String.valueOf(result));
-        bufferedWriter.newLine();
+       // bufferedWriter.write(String.valueOf(result));
+       // bufferedWriter.newLine();
 
-        bufferedWriter.close();
-
+       // bufferedWriter.close();
+        System.out.println("\nМинимальное количество перевернутых страниц: "+result);
         scanner.close();
     }
 }
