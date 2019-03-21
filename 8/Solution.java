@@ -24,7 +24,24 @@ public class Solution {
 	*/
 	
     static int func1(int[] a) {
-       
+        List<Integer> result = new ArrayList();
+        for(int i = 0; i < a.length; i++) {
+            List<Integer> set = new ArrayList();
+            for(int j = 0; j < a.length; j++) {
+                if(Math.abs(a[i] - a[j]) <= 1) {
+                    boolean canAdd = true;
+                    for(int k = 0; k < set.size(); k++) {
+                        if(Math.abs(set.get(k) - a[j]) > 1) {
+                            canAdd = false;
+                            break;
+                        }
+                    }
+                    if(canAdd) set.add(a[j]);
+                }
+            }
+            if(set.size() > result.size()) result = set;
+        }
+        return result.size();
     }
 
     private static final Scanner scanner = new Scanner(System.in);

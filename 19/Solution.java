@@ -34,6 +34,7 @@ public class Solution {
 	*/
 
 
+
     static void insertionSort(int[] arr) {
         for(int i = 1; i < arr.length; i++) {
             int takeThat = arr[i];
@@ -77,7 +78,6 @@ public class Solution {
         int[] sourceArr = arr.clone();
         insertionSort(arr);
         return calcMoves(sourceArr, arr);
-
 
 
 
