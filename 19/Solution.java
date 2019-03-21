@@ -33,8 +33,52 @@ public class Solution {
 	*	 1 <=> 2
 	*/
 
+
+    static void insertionSort(int[] arr) {
+        for(int i = 1; i < arr.length; i++) {
+            int takeThat = arr[i];
+            int key = i - 1;
+            while(key >= 0 && arr[key] > takeThat) {
+                arr[key + 1] = arr[key--];
+            }
+            arr[key + 1] = takeThat;
+        }
+    }
+
+    static int IntArrIndexOf(int[] arr, int needle) {
+        int index = -1;
+        for(int i = 0; i < arr.length; i++) {
+            if(arr[i] == needle) {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
+    static int calcMoves(int[] source, int[] sorted) {
+        int moves = 0;
+
+        for(int i = 0; i < source.length; i++) {
+            if(source[i] == sorted[i]) continue;
+            else {
+                int index = IntArrIndexOf(source, sorted[i]);
+                int temp = source[i];
+                source[i] = source[index];
+                source[index] = temp;
+                moves++;
+            }
+        }
+        return moves;
+    }
+
     // Complete the lilysHomework function below.
     static int lilysHomework(int[] arr) {
+        int[] sourceArr = arr.clone();
+        insertionSort(arr);
+        return calcMoves(sourceArr, arr);
+
+
 
 
     }

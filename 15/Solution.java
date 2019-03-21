@@ -1,3 +1,4 @@
+
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -19,6 +20,7 @@ public class Solution {
      * пример: 6 2;	4 5;
      * ответ:  1;	0.
      */
+
 
     static int pageCount(int n, int p) {
         if (n%2 ==0)
