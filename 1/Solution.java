@@ -1,24 +1,60 @@
-﻿import java.util.*;
+﻿import java.util.Scanner;
 
-public class Solution {
+public class Solution 
+{
 	/*
-	*  Дано n - число уровней. Построить треугольник из символов #.
-	*  Пример для n = 4:
-	*	   #	
-	*	  ##
-	*	 ###
-	*	####
-	*/	 
-	    
-	static void func1(int n) {
-     
-       }
-    
-	private static final Scanner scanner = new Scanner(System.in);
+	 * создать обьект и выполнять его в отдельном потоке
+	 * лябмда выражение
+	 */
+	public static void main(String[] args) {
+		
+		Thread thread1 = new Thread (
+				() -> new RunnerL().run()
+				);
+		thread1.start();
+	}
+   
+}
 
-    public static void main(String[] args) {
+class RunnerL implements Runnable 
+{
+
+    @Override
+    public void run() 
+    {
+    	new ObjectTriangle().Object();
+    }
+}
+
+class ObjectTriangle
+{
+	/*
+     *  Дано n - число уровней. Построить треугольник из символов #.
+     *  Пример для n = 4:
+     *	   #
+     *	  ##
+     *	 ###
+     *	####
+     */
+	
+	static void CreteTriangle(int n) 
+	{
+
+        int c = n - 1;
+        for (int i = 0; i < n; i++) {
+            for (int t = 0; t < n; t++) {
+                System.out.print(c <= t ? "#" : " ");
+            }
+            System.out.println();
+            c--;
+        }
+    }
+	
+	public void Object() 
+	{
+        Scanner scanner = new Scanner(System.in);
         int n = scanner.nextInt();
-        scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
+        CreteTriangle(n);
+    }
+}
 
-        func1(n);
-	}	

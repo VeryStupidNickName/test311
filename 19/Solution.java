@@ -1,40 +1,39 @@
 ﻿import java.io.*;
-import java.math.*;
-import java.security.*;
-import java.text.*;
 import java.util.*;
-import java.util.concurrent.*;
-import java.util.regex.*;
 
-public class Solution {
+interface Search {
+    int go(int index);
+}
 
+class FancyArray {
 
- 	/*
-	* Всякий раз, когда Гоша просит Лизу потусоваться, она занята домашним заданием. 
-	* Гоша хочет помочь ей закончить это быстрее. Можете ли вы помочь Гоше понять домашнее 
-	* задание Лизы, чтобы она могла погулять с ним? 
-	* Рассмотрим массив различных целых чисел. Можно менять местами любые два элемента массива 
-	* любое количество раз. Массив "красив", если сумма разностей двух соседних элементов минимальна.
-	* sum(|qrr[i] - arr[i - 1]|) -> min
-	* Определите минимальное количество перестановок, которые должны быть выполнены 
-	* для того, чтобы сделать массив "красивым".
-	*
-	* 1 <= n <= 10e5
-	* 1 <= qrr[i] <= 2*10e9
-	*
-	* Пример: 4
-	*         2 5 3 1
-	* Ответ: 2
-	*        1 <=> 2, 2 <=> 5
-	*
-	* Пример: 3
-	*         2 3 1
-	* Ответ: 1
-	*	 1 <=> 2
-	*/
+    private int[] arr;
+    private int moves;
+    private Search search = (int desired)-> {
+        for(int iter = 0; iter < this.arr.length; iter++) {
+            if(this.arr[iter] == desired) {
+                return iter;
+            }
+        }
+        return -1;
+    };
+    FancyArray(int n) {
+        this.arr = new int[n];
+        this.moves = 0;
+    }
 
+    public void getElements (String[] arrItems) {
+        for (int i = 0; i < this.arr.length; i++) {
+            int arrItem = Integer.parseInt(arrItems[i]);
+            this.arr[i] = arrItem;
+        }
+    }
 
-    static void insertionSort(int[] arr) {
+    public int getMoves() {
+        return this.moves;
+    }
+
+    public static void insertionSort(int[] arr) {
         for(int i = 1; i < arr.length; i++) {
             int takeThat = arr[i];
             int key = i - 1;
@@ -45,69 +44,92 @@ public class Solution {
         }
     }
 
-    static int IntArrIndexOf(int[] arr, int needle) {
-        int index = -1;
-        for(int i = 0; i < arr.length; i++) {
-            if(arr[i] == needle) {
-                index = i;
-                break;
-            }
+    /**
+     * @param arr - have to be sorted
+     * @param desired - desired value
+     * @return index
+     */
+    public static int binarySearch(int[] arr, int desired) {
+        int left = 0;
+        int right = arr.length-1;
+
+        while(left <= right) {
+            int mid = (left + right) / 2;
+            int guess = arr[mid];
+
+            if(guess == desired) return mid;
+            if(guess > desired) right = mid - 1;
+            else left = mid + 1;
         }
-        return index;
+        return -1;
     }
 
-    static int calcMoves(int[] source, int[] sorted) {
-        int moves = 0;
-
-        for(int i = 0; i < source.length; i++) {
-            if(source[i] == sorted[i]) continue;
+    private void calcMoves(int[] sorted) {
+        this.moves = 0;
+        for(int i = 0; i < this.arr.length; i++) {
+            if (this.arr[i] == sorted[i]) continue;
             else {
-                int index = IntArrIndexOf(source, sorted[i]);
-                int temp = source[i];
-                source[i] = source[index];
-                source[index] = temp;
-                moves++;
+                try {
+                    int index = this.search.go(sorted[i]);
+                    int temp = this.arr[i];
+                    this.arr[i] = this.arr[index];
+                    this.arr[index] = temp;
+                    this.moves++;
+                } catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                    this.moves = -1;
+                }
             }
         }
-        return moves;
     }
 
-    // Complete the lilysHomework function below.
-    static int lilysHomework(int[] arr) {
-        int[] sourceArr = arr.clone();
-        insertionSort(arr);
-        return calcMoves(sourceArr, arr);
+    public void init() {
+        int[] sortedArr = this.arr.clone();
+        insertionSort(sortedArr);
+        this.calcMoves(sortedArr);
+    }
+}
 
+public class Solution {
 
 
 
     }
+
 
     private static final Scanner scanner = new Scanner(System.in);
 
-    public static void main(String[] args) throws IOException {
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+    public static void main(String[] args) throws IOException, Exception {
+        try {
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+            int n = scanner.nextInt();
+            scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
 
-        int n = scanner.nextInt();
-        scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
+            String[] arrItems = scanner.nextLine().split(" ");
+            scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
 
-        int[] arr = new int[n];
+            FancyArray arr = new FancyArray(n);
 
-        String[] arrItems = scanner.nextLine().split(" ");
-        scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
+            Thread thread = new Thread(() -> {
+                arr.getElements(arrItems);
+                arr.init();
+            });
 
-        for (int i = 0; i < n; i++) {
-            int arrItem = Integer.parseInt(arrItems[i]);
-            arr[i] = arrItem;
+            thread.start();
+            thread.join();
+
+            int result = arr.getMoves();
+
+            // System.out.println(result);
+
+            bufferedWriter.write(String.valueOf(result));
+            bufferedWriter.newLine();
+
+            bufferedWriter.close();
+
+            scanner.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
-
-        int result = lilysHomework(arr);
-
-        bufferedWriter.write(String.valueOf(result));
-        bufferedWriter.newLine();
-
-        bufferedWriter.close();
-
-        scanner.close();
     }
 }
